@@ -16,10 +16,16 @@ namespace Boson
         public int nbPlayer = 1;
         public Text nbPlayerVarText;
         public Button startGame;
+        public InputField inputNamePlayer;
 
 
         public bool TriesToConnectToMaster;
         public bool TriesToConnectToRoom;
+
+        GameObject playerInstantiate;
+
+        private bool isReady = false;
+        private int indexPlayer = 1;
 
         // Use this for initialization
         void Start()
@@ -33,10 +39,17 @@ namespace Boson
         {
             BtnConnectMaster.gameObject.SetActive(!PhotonNetwork.IsConnected && !TriesToConnectToMaster);
             BtnConnectRoom.gameObject.SetActive(PhotonNetwork.IsConnected && !TriesToConnectToMaster && !TriesToConnectToRoom);
+
             nbPlayerText.gameObject.SetActive(PhotonNetwork.IsConnected && !TriesToConnectToMaster && TriesToConnectToRoom);
             nbPlayerVarText.gameObject.SetActive(PhotonNetwork.IsConnected && !TriesToConnectToMaster && TriesToConnectToRoom);
-            startGame.gameObject.SetActive(PhotonNetwork.IsConnected && !TriesToConnectToMaster && TriesToConnectToRoom);
+            inputNamePlayer.gameObject.SetActive(PhotonNetwork.IsConnected && !TriesToConnectToMaster && TriesToConnectToRoom);
+            startGame.gameObject.SetActive(PhotonNetwork.IsConnected && !TriesToConnectToMaster && TriesToConnectToRoom && isReady);
+            
             nbPlayerVarText.text = nbPlayer + "";
+            if (playerInstantiate != null )
+            {
+                isReady = true;
+            }
         }
 
         public void OnClickConnectToMaster()
@@ -90,27 +103,28 @@ namespace Boson
             TriesToConnectToRoom = false;
         }
 
-        GameObject playerInstantiate;
-
         public override void OnJoinedRoom()
         {
             base.OnJoinedRoom();
-            //TriesToConnectToRoom = false;
-            Debug.Log("Master: " + PhotonNetwork.IsMasterClient + " | Players In Room: " + PhotonNetwork.CurrentRoom.PlayerCount + " | RoomName: " + PhotonNetwork.CurrentRoom.Name);
-            //SceneManager.LoadScene("Network");
-            this.nbPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
+            nbPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
+            indexPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
+            inputNamePlayer.text = "Player " + indexPlayer;
             SpawnPlayer(ref playerInstantiate);
 
         }
 
         void SpawnPlayer(ref GameObject playerInstantiate)
         {
-            //GameObject playerinstantiate = Instantiate(player, new Vector3(0+(positionX*SCALE_X), 0+(positionY*SCALE_Y), 1), Quaternion.identity);
+
             if (playerInstantiate != null)
             {
                 PhotonNetwork.Destroy(playerInstantiate);
             }
             playerInstantiate = PhotonNetwork.Instantiate("Perso", new Vector3(0, 0, 1), Quaternion.identity);
+            //playerInstantiate.GetComponent<UI_Management>().namePlayerBoson = "Player " + indexPlayer;
+            string playerNameInInput = inputNamePlayer.text;
+            playerInstantiate.GetComponent<UI_Management>().SendNamePlayer(playerNameInInput);
+
         }
 
         
@@ -123,14 +137,22 @@ namespace Boson
 
         public void OnclikStartGame()
         {
-            //SceneManager.LoadScene("Game");
             if (PhotonNetwork.IsMasterClient)
-            {
+            {  
                 PhotonNetwork.LoadLevel("Game");
-            }
-            
+            }    
 
         } 
+
+        public void OnChangeInputNamePlayer()
+        {
+            string playerNameInInput = inputNamePlayer.text;
+            if (playerInstantiate != null)
+            {
+                playerInstantiate.GetComponent<UI_Management>().SendNamePlayer(playerNameInInput);
+            }
+            
+        }
          
     }
 }

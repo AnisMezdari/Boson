@@ -35,5 +35,6 @@ MonoBehaviour:
   - SpawnPlayer
   - SetPositionX
   - SetPositionY
+  - SetNamePlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
