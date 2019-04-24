@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingZombie : MonoBehaviourPun {
+public class Zombie : MonoBehaviourPun {
 
 
     public float movingSpeed;
@@ -29,21 +29,16 @@ public class MovingZombie : MonoBehaviourPun {
     void Update () {
         if (PhotonNetwork.IsMasterClient)
         {
-            this.transform.position = Vector3.MoveTowards(transform.position, target.position, movingSpeed * Time.deltaTime);
-            FollowPlayer();
-        }
-        
-    }
-
-    private List<int> getDoorNumber(GameObject room){
-        List<int> doorList = new List<int>();
-        for(int i =1;i<5;i++){  
-            GameObject  door = room.transform.GetChild(i).gameObject;
-            if(door.activeSelf == true){
-            doorList.Add(i);
+            if(target == null)
+            {
+                TakeDoor();
+            }
+            else
+            {
+                this.transform.position = Vector3.MoveTowards(transform.position, target.position, movingSpeed * Time.deltaTime);
+                FollowPlayer();
             }
         }
-        return doorList;
     }
 
     private void TakeDoor()
@@ -54,6 +49,20 @@ public class MovingZombie : MonoBehaviourPun {
         int indexInTableRandom = Random.Range(1,indexDoor.Count+1);
         this.target = room.transform.GetChild(indexDoor[indexInTableRandom-1]).transform;
         this.oldPosition = this.transform;
+    }
+
+    private List<int> getDoorNumber(GameObject room)
+    {
+        List<int> doorList = new List<int>();
+        for (int i = 1; i < 5; i++)
+        {
+            GameObject door = room.transform.GetChild(i).gameObject;
+            if (door.activeSelf == true)
+            {
+                doorList.Add(i);
+            }
+        }
+        return doorList;
     }
 
     void OnTriggerEnter2D(Collider2D coll){
@@ -110,24 +119,26 @@ public class MovingZombie : MonoBehaviourPun {
 
             if (!followPlayer)
             {
-                int indexPlayerRandom = Random.Range(0, listPlayerInSameRoom.Count);
-                GameObject targetPlayer = listPlayerInSameRoom[indexPlayerRandom];
-                this.target = targetPlayer.transform;
-                this.playerFollowed = targetPlayer;
-                followPlayer = true;
+                ChoosePlayer(listPlayerInSameRoom);
             }
             else
             {
                 if (!PlayerSameRoom(this.playerFollowed))
                 {
-                    int indexPlayerRandom = Random.Range(0, listPlayerInSameRoom.Count);
-                    GameObject targetPlayer = listPlayerInSameRoom[indexPlayerRandom];
-                    this.target = targetPlayer.transform;
-                    this.playerFollowed = targetPlayer;
-                    followPlayer = true;
+                    ChoosePlayer(listPlayerInSameRoom);
+                    
                 }
             }
         }
+    }
+
+    private void ChoosePlayer(List<GameObject> listPlayerInSameRoom)
+    {
+        int indexPlayerRandom = Random.Range(0, listPlayerInSameRoom.Count);
+        GameObject targetPlayer = listPlayerInSameRoom[indexPlayerRandom];
+        this.target = targetPlayer.transform;
+        this.playerFollowed = targetPlayer;
+        followPlayer = true;
     }
 
 
@@ -147,8 +158,8 @@ public class MovingZombie : MonoBehaviourPun {
 
     bool PlayerSameRoom(GameObject player)
     {
-        int playerPositionX = player.GetComponent<Moving>().positionX;
-        int playerPositionY = player.GetComponent<Moving>().positionY;
+        int playerPositionX = player.GetComponent<PlayerBoson>().positionX;
+        int playerPositionY = player.GetComponent<PlayerBoson>().positionY;
 
         if (playerPositionX == this.Xposition && playerPositionY == this.Yposition)
         {

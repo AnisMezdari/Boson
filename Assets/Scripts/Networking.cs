@@ -23,8 +23,7 @@ namespace Boson
 
         // Use this for initialization
         void Start()
-        {
-       
+        { 
             TriesToConnectToMaster = false;
             TriesToConnectToRoom = false;
         }
@@ -76,6 +75,7 @@ namespace Boson
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
+            Debug.Log(message);
             base.OnJoinRandomFailed(returnCode, message);
             //no room available
             //create a room (null as a name means "does not matter")
@@ -117,11 +117,9 @@ namespace Boson
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             base.OnPlayerEnteredRoom(newPlayer);
-            Debug.Log("nouveau joueur sa race");
             nbPlayer++;
             SpawnPlayer(ref playerInstantiate);
         }
-
 
         public void OnclikStartGame()
         {
