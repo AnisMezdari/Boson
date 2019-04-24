@@ -29,7 +29,8 @@ namespace Boson
 
         // Use this for initialization
         void Start()
-        { 
+        {
+            Camera.main.aspect = 2960f / 1440f;
             TriesToConnectToMaster = false;
             TriesToConnectToRoom = false;
         }
@@ -55,6 +56,7 @@ namespace Boson
         public void OnClickConnectToMaster()
         {
             TriesToConnectToMaster = true;
+            GameObject.Find("Canvas_MainMenu").SetActive(false);
             //PhotonNetwork.ConnectToMaster(ip,port,appid); //manual connection
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();           //automatic connection based on the config file in Photon/PhotonUnityNetworking/Resources/PhotonServerSettings.asset

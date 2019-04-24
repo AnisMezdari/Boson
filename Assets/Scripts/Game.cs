@@ -36,6 +36,7 @@ public class Game : MonoBehaviourPunCallbacks
             SpawnPlayers();
             InitiateExit();
             SpawnZombie(numberZombie);
+            Camera.main.aspect = 2960f / 1440f;
         }
     }
 

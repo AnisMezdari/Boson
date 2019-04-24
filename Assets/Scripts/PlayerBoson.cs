@@ -36,7 +36,7 @@ public class PlayerBoson : MonoBehaviourPun
 
         if (this != null)
         {
-            Camera.main.aspect = 2960f / 1440f;
+            
             game = GameObject.Find("GameScript").GetComponent<Game>();
             if (photonView.IsMine)
             {
