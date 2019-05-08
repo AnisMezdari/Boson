@@ -117,6 +117,8 @@ GameObject:
   - component: {fileID: 4114146113035339749}
   - component: {fileID: 6999834253836592283}
   - component: {fileID: 4938646046079105512}
+  - component: {fileID: 6820622116387595354}
+  - component: {fileID: -613205907490679775}
   m_Layer: 0
   m_Name: Perso
   m_TagString: Player
@@ -274,16 +276,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 244564ec4052d4a418277a3c7c428d8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingSpeed: 4
-  inputFront: z
-  inputBack: s
-  inputRight: d
-  inputLeft: q
-  joystick: {fileID: 2929252283123773951, guid: aaa2c939c0359ac4dbce3f49e8b90252,
-    type: 3}
   health: 3
   positionX: 0
   positionY: 0
+  ui_player: {fileID: 0}
 --- !u!114 &9178547306079090473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,6 +332,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   namePlayerBoson: 
+  UI_Object: {fileID: 0}
+--- !u!114 &6820622116387595354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6382113623544363130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3482408b74df3f54b9759d2139abb170, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movingSpeed: 4
+--- !u!114 &-613205907490679775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6382113623544363130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e04f0f6d340e3a42b93d77f070cf791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8281896156853100722
 GameObject:
   m_ObjectHideFlags: 0

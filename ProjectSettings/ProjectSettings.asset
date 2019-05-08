@@ -161,6 +161,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: om.AnisEntreprise.Boson
     Standalone: com.Company.ProductName
+    iPhone: com.EZaac.Boson
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
@@ -240,7 +241,7 @@ PlayerSettings:
   metalEditorSupport: 1
   metalAPIValidation: 1
   iOSRenderExtraFrameOnPause: 0
-  appleDeveloperTeamID: 
+  appleDeveloperTeamID: mezdari77580@gmail.com
   iOSManualSigningProvisioningProfileID: 
   tvOSManualSigningProvisioningProfileID: 
   iOSManualSigningProvisioningProfileType: 0

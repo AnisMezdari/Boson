@@ -3,7 +3,7 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 
 public class Game : MonoBehaviourPunCallbacks
@@ -19,14 +19,13 @@ public class Game : MonoBehaviourPunCallbacks
 	public int numberZombie = 5;
     public int MINIMUM_DISTANCE_ESCAPE = 1;
 
-    public float SCALE_X = 34;
+    public int SCALE_X = 34;
     public int SCALE_Y = -17;
+    public float INITIATE_POSITION = 10;
+    public int SPACE_SCALE = 3;
 
     private int initialPlayerPositionX;
     private int initialPlayerPositionY;
-
-    public GameObject looseText;
-    public GameObject winText;
 
     // Use this for initialization
     void Start () {
@@ -36,8 +35,9 @@ public class Game : MonoBehaviourPunCallbacks
             SpawnPlayers();
             InitiateExit();
             SpawnZombie(numberZombie);
-            Camera.main.aspect = 2960f / 1440f;
+            
         }
+        Camera.main.aspect = 2960f / 1440f;
     }
 
 	int InitateMap(int largeur,int hauteur,bool randomDelete){
@@ -84,32 +84,33 @@ public class Game : MonoBehaviourPunCallbacks
 	}
 
 	void  InitiateDoor(GameObject map, int i, int j){
-			int right = 3;
-			int down = 2;
-			int left = 1;
-			int up = 4;
 
-			if(j == 0){
-				map.transform.GetChild(down).gameObject.SetActive(true);
-			}
-			if(i == 0){
-				map.transform.GetChild(right).gameObject.SetActive(true);
-			}
-			if( i > 0 && i< (widthMap-1) ){
-				map.transform.GetChild(left).gameObject.SetActive(true);
-				map.transform.GetChild(right).gameObject.SetActive(true);
-			}
-			if(j > 0 &&  j < (heightMap-1)) {
-				map.transform.GetChild(up).gameObject.SetActive(true);
-				map.transform.GetChild(down).gameObject.SetActive(true);
-			}
-			if(i == (widthMap-1) ){
-				map.transform.GetChild(left).gameObject.SetActive(true);
-			}
-			if(j == (heightMap-1) ){
-				map.transform.GetChild(up).gameObject.SetActive(true);
-			}
-	}
+	    int right = 3;
+	    int down = 2;
+	    int left = 1;
+	    int up = 4;
+
+	    if(j == 0){
+		    map.transform.GetChild(down).gameObject.SetActive(true);
+	    }
+	    if(i == 0){
+		    map.transform.GetChild(right).gameObject.SetActive(true);
+	    }
+	    if( i > 0 && i< (widthMap-1) ){
+		    map.transform.GetChild(left).gameObject.SetActive(true);
+		    map.transform.GetChild(right).gameObject.SetActive(true);
+	    }
+	    if(j > 0 &&  j < (heightMap-1)) {
+		    map.transform.GetChild(up).gameObject.SetActive(true);
+		    map.transform.GetChild(down).gameObject.SetActive(true);
+	    }
+	    if(i == (widthMap-1) ){
+		    map.transform.GetChild(left).gameObject.SetActive(true);
+	    }
+	    if(j == (heightMap-1) ){
+		    map.transform.GetChild(up).gameObject.SetActive(true);
+	    }
+    }
 
     void SpawnZombie(int numberZombie){
         int positionX;
@@ -148,7 +149,6 @@ public class Game : MonoBehaviourPunCallbacks
         {
             this.initialPlayerPositionY = Random.Range(0, this.heightMap);
             this.initialPlayerPositionX = indexWidth[Random.Range(0, 2)];
-            Debug.Log(initialPlayerPositionX);
         }
         else
         {
@@ -162,20 +162,35 @@ public class Game : MonoBehaviourPunCallbacks
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        int compteur = 0;
+        int counter = 0;
         foreach (GameObject player in players)
         {
-            Debug.Log("sa passe frero");
-            player.GetComponent<PlayerBoson>().UseSpawnPlayerRPC(positionX, positionY, compteur);
-            compteur++;
+            player.GetComponent<PlayerBoson>().UseSpawnPlayerRPC(positionX, positionY, INITIATE_POSITION, counter, SPACE_SCALE);
+            counter++;
         }
     }
 
 
-    // Update is called once per frame
-    void Update () {
+    public void CheckSurvivor()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        if (players.Length == 0)
+        {
+            EndGame();
+        }
+    }
+
+    private void EndGame()
+    {
 
     }
 
- 
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+
 }
