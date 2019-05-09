@@ -549,7 +549,7 @@ GameObject:
   m_Component:
   - component: {fileID: 931621531}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Player_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -692,7 +692,7 @@ MonoBehaviour:
   heightMap: 6
   randomDelete: 0
   minimumRoom: 1
-  numberZombie: 30
+  numberZombie: 10
   MINIMUM_DISTANCE_ESCAPE: 6
   SCALE_X: 34
   SCALE_Y: -17

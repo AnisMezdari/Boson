@@ -35,18 +35,36 @@ public class ActionPlayer : MonoBehaviourPun
     {
         if (photonView.IsMine)
         {
-            InputMoving();
+            Move();
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Shoot();
+            }
         }
+
+       
     }
 
-    private void InputMoving()
+    private void Move()
     {
         if (joystick != null)
         {
-            transform.Translate(0, joystick.Vertical * movingSpeed * Time.deltaTime, 0);
-            transform.Translate(joystick.Horizontal * movingSpeed * Time.deltaTime, 0, 0);
-        }
-       
+            transform.Translate(0, joystick.Vertical * movingSpeed * Time.deltaTime, 0, Space.World);
+            transform.Translate(joystick.Horizontal * movingSpeed * Time.deltaTime, 0, 0, Space.World);
+            float angle = Mathf.Atan2(-(joystick.Horizontal), joystick.Vertical);
+            transform.rotation = Quaternion.Euler(0f, 0f, angle * Mathf.Rad2Deg);
 
+        }
+    }
+
+
+    public void Shoot()
+    {
+        // instancier un gameobject bullet
+        GameObject bullet = PhotonNetwork.Instantiate("Bullet",this.transform.position, this.transform.rotation );
+        float angle = Mathf.Atan2(-(joystick.Horizontal), joystick.Vertical);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle * Mathf.Rad2Deg);
+
+        //
     }
 }

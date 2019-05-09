@@ -83,13 +83,13 @@ public class PlayerBoson : MonoBehaviourPun
      */
     public void TakeLeftDoor()
     {
-        this.transform.position = new Vector2(this.transform.position.x - 6, this.transform.position.y);
+        this.transform.position = new Vector2(this.transform.position.x - 8, this.transform.position.y);
         positionX--;
         photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
     }
     public void TakeRightDoor()
     {
-        this.transform.position = new Vector2(this.transform.position.x + 6, this.transform.position.y);
+        this.transform.position = new Vector2(this.transform.position.x + 8, this.transform.position.y);
         positionX++;
         photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
     }

@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 5243367501508021477}
   - component: {fileID: 7048966686239570388}
   - component: {fileID: 3570039498251220761}
-  - component: {fileID: 1735621984064869298}
   - component: {fileID: 9036345830185745936}
   - component: {fileID: 5897764155272633170}
   - component: {fileID: -1787653407914758128}
   - component: {fileID: 2873564703968997511}
+  - component: {fileID: 1826390565}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Untagged
@@ -97,35 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a118361f0bd8c58479ecdc6c16b11254, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingSpeed: 3
+  movingSpeed: 3.5
   Xposition: 0
   Yposition: 0
---- !u!61 &1735621984064869298
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 231107752290675374}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.29, y: 1.29}
-    newSize: {x: 1.29, y: 1.29}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.29, y: 1.29}
-  m_EdgeRadius: 0
 --- !u!50 &9036345830185745936
 Rigidbody2D:
   serializedVersion: 4
@@ -168,7 +142,7 @@ MonoBehaviour:
   - {fileID: -1787653407914758128}
   - {fileID: 2873564703968997511}
   viewIdField: 0
-  InstantiationId: 0
+  InstantiationId: 1
   isRuntimeInstantiated: 0
 --- !u!114 &-1787653407914758128
 MonoBehaviour:
@@ -201,3 +175,19 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
+--- !u!58 &1826390565
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231107752290675374}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.0035095215}
+  serializedVersion: 2
+  m_Radius: 0.6591797

@@ -10,8 +10,6 @@ public class Zombie : MonoBehaviourPun {
     public int Xposition;
     public int Yposition;
     private Transform target;
-    private Transform oldPosition;
-    private Vector3 direction;
     private bool followPlayer;
     private GameObject playerFollowed;
 
@@ -20,8 +18,6 @@ public class Zombie : MonoBehaviourPun {
         if (PhotonNetwork.IsMasterClient)
         {
             followPlayer = false;
-            this.oldPosition = this.transform;
-            TakeDoor();
         }
     }
 
@@ -29,26 +25,25 @@ public class Zombie : MonoBehaviourPun {
     void Update () {
         if (PhotonNetwork.IsMasterClient)
         {
-            if(target == null)
-            {
-                TakeDoor();
-            }
-            else
+            if(followPlayer)
             {
                 this.transform.position = Vector3.MoveTowards(transform.position, target.position, movingSpeed * Time.deltaTime);
                 FollowPlayer();
             }
+            else
+            {
+                ChoosePlayer();
+            }
+
         }
     }
 
-    private void TakeDoor()
+    private void TakeDoor(int index)
     {
         GameObject room = GameObject.Find("Room_"+ Xposition + "_" + Yposition);
-
-        List<int> indexDoor = getDoorNumber(room);
-        int indexInTableRandom = Random.Range(1,indexDoor.Count+1);
-        this.target = room.transform.GetChild(indexDoor[indexInTableRandom-1]).transform;
-        this.oldPosition = this.transform;
+        //List<int> indexDoor = getDoorNumber(room);
+        //int indexInTableRandom = Random.Range(1,indexDoor.Count+1);
+        this.target = room.transform.GetChild(index).transform;
     }
 
     private List<int> getDoorNumber(GameObject room)
@@ -68,78 +63,69 @@ public class Zombie : MonoBehaviourPun {
     void OnTriggerEnter2D(Collider2D coll){
         if (PhotonNetwork.IsMasterClient)
         {
-            bool takeDoor = false;
             if (coll.name == "DoorLeft")
             {
                 this.transform.position = new Vector3(this.transform.position.x - 6, this.transform.position.y, 0);
-                takeDoor = true;
                 Xposition--;
             }
             if (coll.name == "DoorDown")
             {
                 this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 8, 0);
-                takeDoor = true;
                 Yposition++;
             }
             if (coll.name == "DoorRight")
             {
                 this.transform.position = new Vector3(this.transform.position.x + 6, this.transform.position.y, 0);
-                takeDoor = true;
                 Xposition++;
             }
             if (coll.name == "DoorTop")
             {
                 this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 8, 0);
-                takeDoor = true;
                 Yposition--;
             }
-            if (takeDoor)
-            {
-                TakeDoor();
-            }
+
         }
        
     }
 
-    void FollowPlayer(){
-
-        List<GameObject> listPlayerInSameRoom = ListPlayerSameRoom();
-        if (listPlayerInSameRoom.Count == 0 )
+    void FollowPlayer()
+    {
+        if (playerFollowed.GetComponent<PlayerBoson>().positionX < this.Xposition)
         {
-
-            if (followPlayer)
-            {
-                TakeDoor();
-                followPlayer = false;
-            }
-         
+            TakeDoor(1);
+        } else if (playerFollowed.GetComponent<PlayerBoson>().positionX > this.Xposition)
+        {
+            TakeDoor(3);
+        } else if (playerFollowed.GetComponent<PlayerBoson>().positionY < this.Yposition)
+        {
+            TakeDoor(4);
+        } else if(playerFollowed.GetComponent<PlayerBoson>().positionY > this.Yposition)
+        {
+            TakeDoor(2);
         }
         else
         {
+            this.target = playerFollowed.transform;
+        }
+    }
+    private void ChoosePlayer()
+    {
+        List<GameObject> listPlayerInSameRoom = ListPlayerSameRoom();
+        if (listPlayerInSameRoom.Count > 0)
+        {
+            AssignPlayerToTarget(listPlayerInSameRoom);
 
-            if (!followPlayer)
-            {
-                ChoosePlayer(listPlayerInSameRoom);
-            }
-            else
-            {
-                if (!PlayerSameRoom(this.playerFollowed))
-                {
-                    ChoosePlayer(listPlayerInSameRoom);
-                    
-                }
-            }
         }
     }
 
-    private void ChoosePlayer(List<GameObject> listPlayerInSameRoom)
-    {
+     private void AssignPlayerToTarget(List<GameObject> listPlayerInSameRoom)
+     {
         int indexPlayerRandom = Random.Range(0, listPlayerInSameRoom.Count);
         GameObject targetPlayer = listPlayerInSameRoom[indexPlayerRandom];
         this.target = targetPlayer.transform;
         this.playerFollowed = targetPlayer;
         followPlayer = true;
-    }
+     }
 
 
     List<GameObject> ListPlayerSameRoom()
