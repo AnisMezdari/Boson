@@ -116,7 +116,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1, y: -0.68}
+  m_AnchoredPosition: {x: 0.80499, y: 2.73}
   m_SizeDelta: {x: 3.466, y: 0.69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1452578522
@@ -371,6 +371,7 @@ MonoBehaviour:
   health: 3
   positionX: 0
   positionY: 0
+  munitions: 6
   ui_player: {fileID: 0}
 --- !u!114 &9178547306079090473
 MonoBehaviour:
@@ -425,6 +426,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   namePlayerBoson: 
   UI_Object: {fileID: 0}
+  health: {fileID: 0}
+  munitions: {fileID: 0}
 --- !u!114 &6820622116387595354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,7 +440,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3482408b74df3f54b9759d2139abb170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingSpeed: 3.5
+  movingSpeed: 4.7
+  shotButton: {fileID: 0}
 --- !u!114 &-613205907490679775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,3 +454,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e04f0f6d340e3a42b93d77f070cf791, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInvincible: 0

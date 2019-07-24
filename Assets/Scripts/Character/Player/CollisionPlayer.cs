@@ -6,11 +6,21 @@ using UnityEngine;
 public class CollisionPlayer : MonoBehaviourPun
 {
     private PlayerBoson player;
+    public bool isInvincible;
     void Start()
     {
         player = this.GetComponent<PlayerBoson>();
+        isInvincible = false;
     }
-        void OnTriggerEnter2D(Collider2D coll)
+    private void Update()
+    {
+        if (!isInvincible)
+        {
+            CancelInvoke("CharacterBlink");
+            this.GetComponent<Renderer>().enabled = true;
+        }
+    }
+    void OnTriggerEnter2D(Collider2D coll)
     {
 
         if (photonView.IsMine && PhotonNetwork.IsConnected)
@@ -48,8 +58,13 @@ public class CollisionPlayer : MonoBehaviourPun
         {
             if (collision.transform.name == "Zombie(Clone)")
             {
-                player.health--;
-                player.ui_player.ChangeHealth(player.health);
+                if (!isInvincible)
+                {
+                    player.health--;
+                    player.ui_player.ChangeHealth(player.health);
+                    //photonView.RPC("TemporaryInvincible", RpcTarget.All);
+                    TemporaryInvincible();
+                }
 
                 if (player.health == 0)
                 {
@@ -57,5 +72,30 @@ public class CollisionPlayer : MonoBehaviourPun
                 }
             }
         }
+        if (PhotonNetwork.IsConnected && collision.transform.name == "Zombie(Clone)")
+        {
+            if (!isInvincible)
+            {
+                TemporaryInvincible();
+            }
+        }
+    }
+
+    private void TemporaryInvincible()
+    {
+        StartCoroutine(WaitAfterReceiveAttack());
+        InvokeRepeating("CharacterBlink", 0, 0.2f);
+    }
+
+    IEnumerator WaitAfterReceiveAttack()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(5);
+        isInvincible = false;
+       
+    }
+    private void CharacterBlink()
+    {
+        this.GetComponent<Renderer>().enabled = !this.GetComponent<Renderer>().enabled;
     }
 }

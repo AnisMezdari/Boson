@@ -10,7 +10,8 @@ public class PlayerBoson : MonoBehaviourPun
     public int health = 3;
     public int positionX;
     public int positionY;
-
+    public int munitions= 6 ;
+ 
     private Game game;
     public UI_PlayerBoson  ui_player;
 
@@ -19,6 +20,7 @@ public class PlayerBoson : MonoBehaviourPun
     {
         DontDestroyOnLoad(transform.gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+ 
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -85,29 +87,35 @@ public class PlayerBoson : MonoBehaviourPun
     {
         this.transform.position = new Vector2(this.transform.position.x - 8, this.transform.position.y);
         positionX--;
-        photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
+        TakeDoor();
     }
     public void TakeRightDoor()
     {
         this.transform.position = new Vector2(this.transform.position.x + 8, this.transform.position.y);
         positionX++;
-        photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
+        TakeDoor();
     }
 
     public void TakeTopDoor()
     {
         this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + 8);
         positionY--;
-        photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
+        TakeDoor();
     }
 
     public void TakeBottomDoor()
     {
         this.transform.position = new Vector2(this.transform.position.x, this.transform.position.y - 8);
         positionY++;
-        photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
+        TakeDoor();
     }
 
+    public void TakeDoor()
+    {
+        photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
+        int numberZombie = Random.Range(1, 5);
+
+    }
 
 
     public void Die()
@@ -122,6 +130,9 @@ public class PlayerBoson : MonoBehaviourPun
         ui_player.Win();
         game.CheckSurvivor();
     }
+
+
+
 
 
 }

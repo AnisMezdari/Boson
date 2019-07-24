@@ -14,6 +14,9 @@ public class UI_PlayerBoson: MonoBehaviourPun
 
     private PlayerBoson player;
 
+    public Text health;
+    public Text munitions;
+
 
     void Start()
     {
@@ -30,6 +33,7 @@ public class UI_PlayerBoson: MonoBehaviourPun
                 if (scene.name == "Game")
                 {
                     UI_Object = GameObject.FindGameObjectWithTag("Script_UI_Player").GetComponent<UI_Objects>();
+                    ChangeMunitions(player.munitions);
                 }
             }
 
@@ -42,6 +46,7 @@ public class UI_PlayerBoson: MonoBehaviourPun
         if (this != null)
         {
             this.transform.GetChild(0).GetChild(0).GetComponent<Text>().text = namePlayerBoson;
+
         }
         
     }
@@ -73,6 +78,10 @@ public class UI_PlayerBoson: MonoBehaviourPun
             UI_Object.health.text = health + "";
         }
         
+    }
+    public void ChangeMunitions(int munitions)
+    {
+         UI_Object.munitions.text = munitions + "x";
     }
 
     public void Win()

@@ -41,8 +41,6 @@ public class Zombie : MonoBehaviourPun {
     private void TakeDoor(int index)
     {
         GameObject room = GameObject.Find("Room_"+ Xposition + "_" + Yposition);
-        //List<int> indexDoor = getDoorNumber(room);
-        //int indexInTableRandom = Random.Range(1,indexDoor.Count+1);
         this.target = room.transform.GetChild(index).transform;
     }
 
@@ -124,7 +122,8 @@ public class Zombie : MonoBehaviourPun {
         GameObject targetPlayer = listPlayerInSameRoom[indexPlayerRandom];
         this.target = targetPlayer.transform;
         this.playerFollowed = targetPlayer;
-        followPlayer = true;
+        StartCoroutine(WaitBeforeChargeplayer());
+        //followPlayer = true;
      }
 
 
@@ -155,5 +154,11 @@ public class Zombie : MonoBehaviourPun {
         
     }
 
+
+    IEnumerator WaitBeforeChargeplayer()
+    {
+        yield return new WaitForSeconds(1);
+        followPlayer = true;
+    }
 
 }

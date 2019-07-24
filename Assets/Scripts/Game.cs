@@ -130,13 +130,59 @@ public class Game : MonoBehaviourPunCallbacks
 
             } while (positionX == positionXPlayer && positionY == positionYPlayer);
 
-            GameObject zombieInstantiate = PhotonNetwork.InstantiateSceneObject("Zombie", new Vector3(0 + (positionX * SCALE_X), 0 + (positionY * SCALE_Y), 1), Quaternion.identity);
+            GameObject room = GameObject.Find("Room_" + positionX + "_" + positionY);
+
+            int counter = room.GetComponent<AddZombie>().counter;
+
+            float[] precisePostion = SpawnZombieAtPrecisePosition(counter);
+
+            float shiftX = precisePostion[0];
+            float shiftY = precisePostion[1];
+
+            GameObject zombieInstantiate = PhotonNetwork.InstantiateSceneObject("Zombie",
+                new Vector3(shiftX + (positionX * SCALE_X), shiftY + (positionY * SCALE_Y), 1), Quaternion.identity);
+
             Zombie movingScript = zombieInstantiate.GetComponent<Zombie>();
 			movingScript.Xposition = positionX;
 			movingScript.Yposition = positionY;
-		}
+
+            room.GetComponent<AddZombie>().counter = room.GetComponent<AddZombie>().counter + 1;
+
+        }
 
 	}
+
+    private float[] SpawnZombieAtPrecisePosition(int counter)
+    {
+        float[] precisePosition = { 0, 0 };
+
+        if(counter == 0)
+        {
+            precisePosition[0] = -13;
+            precisePosition[1] = 5.26f;
+            
+            return precisePosition;
+        }
+        if(counter == 1)
+        {
+            precisePosition[0] = 13;
+            precisePosition[1] = 5.26f;
+            return precisePosition;
+        }
+        if(counter == 2)
+        {
+            precisePosition[0] = 13;
+            precisePosition[1] = -5.26f;
+            return precisePosition;
+        }
+        if(counter == 3)
+        {
+            precisePosition[0] = -13;
+            precisePosition[1] = -5.26f;
+            return precisePosition;
+        }
+        return precisePosition;
+    }
 
     private void SpawnPlayers()
     {

@@ -15,7 +15,6 @@ public class Bullet_Action : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(this.transform.rotation.x + " " + this.transform.rotation.y);
         transform.Translate(this.transform.up *Time.deltaTime * 10  , Space.World);
     }
 
@@ -26,7 +25,6 @@ public class Bullet_Action : MonoBehaviourPun
             PhotonNetwork.Destroy(collision.gameObject);
             PhotonNetwork.Destroy(this.gameObject);
         }
-        Debug.Log(collision.name);
         if(collision.name == "wallDown" || collision.name == "wallRight" || collision.name == "wallUp" || collision.name == "wallLeft")
         {
             PhotonNetwork.Destroy(this.gameObject);

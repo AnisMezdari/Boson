@@ -1,25 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class UI_Objects : MonoBehaviour
+public class AddZombie : MonoBehaviour
 {
 
-    public GameObject looseText;
-    public GameObject winText;
-    public Text health;
-    public Text munitions;
+    public int counter;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        counter = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+
         
     }
 }
