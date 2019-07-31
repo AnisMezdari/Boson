@@ -109,6 +109,7 @@ namespace Boson
             base.OnPlayerEnteredRoom(newPlayer);
             nbPlayer++;
             SpawnPlayer(ref playerInstantiate);
+            
         }
 
          

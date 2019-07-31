@@ -90,7 +90,7 @@ public class CollisionPlayer : MonoBehaviourPun
     IEnumerator WaitAfterReceiveAttack()
     {
         isInvincible = true;
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         isInvincible = false;
        
     }

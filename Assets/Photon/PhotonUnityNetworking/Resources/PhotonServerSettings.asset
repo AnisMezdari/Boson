@@ -40,5 +40,10 @@ MonoBehaviour:
   - SetPostion
   - SetPosition
   - SpawnPosition
+  - InstantiateZombie
+  - EndGame
+  - StartRound
+  - CheckSurvivor
+  - SetState
   DisableAutoOpenWizard: 1
   ShowSettings: 1

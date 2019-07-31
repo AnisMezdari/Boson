@@ -11,8 +11,13 @@ public class PlayerBoson : MonoBehaviourPun
     public int positionX;
     public int positionY;
     public int munitions= 6 ;
- 
-    private Game game;
+    public bool spectatorMode = false;
+    public bool won = false;
+    
+
+    public PlayerBoson spectatorPlayer;
+
+    public Game game;
     public UI_PlayerBoson  ui_player;
 
     // Use this for initialization
@@ -20,7 +25,7 @@ public class PlayerBoson : MonoBehaviourPun
     {
         DontDestroyOnLoad(transform.gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
- 
+
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -34,6 +39,7 @@ public class PlayerBoson : MonoBehaviourPun
                 {
                     ui_player = this.transform.GetComponent<UI_PlayerBoson>();
                     ui_player.ChangeHealth(health);
+                   
                 }
             }
 
@@ -47,9 +53,24 @@ public class PlayerBoson : MonoBehaviourPun
         {
             if (game != null)
             {
-                Camera.main.transform.position = new Vector3((positionX * game.SCALE_X), (positionY * game.SCALE_Y), -(game.INITIATE_POSITION));
+
+                if (spectatorMode)
+                {
+                    this.positionX = spectatorPlayer.positionX;
+                    this.positionY = spectatorPlayer.positionY;
+                }
+                Camera.main.transform.position = new Vector3((positionX * game.SCALE_X), (positionY * game.SCALE_Y), - (game.INITIATE_POSITION));
             }
         }
+        if (!won)
+        {
+            this.GetComponent<SpriteRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 1f);
+        }
+        if(won && CheckSurvivor() < 1 && NumberWonSurvivor() < 2)
+        {
+            ui_player.EndGame();
+        }
+
     }
 
     [PunRPC]
@@ -76,6 +97,20 @@ public class PlayerBoson : MonoBehaviourPun
     public void UseSetPositionRPC(int positionX, int positionY)
     {
         photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
+    }
+
+    [PunRPC]
+    public void SetState(int munitions, bool won )
+    {
+        this.munitions = munitions;
+        this.won = won;
+        health = 3;
+        this.GetComponent<SpriteRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 0f);
+    }
+
+    public void UseSetStateRPC(int munitions, bool won)
+    {
+        photonView.RPC("SetState", RpcTarget.All, munitions, won);
     }
 
 
@@ -114,25 +149,101 @@ public class PlayerBoson : MonoBehaviourPun
     {
         photonView.RPC("SetPosition", RpcTarget.All, positionX, positionY);
         int numberZombie = Random.Range(1, 5);
-
     }
 
 
     public void Die()
     {
-        PhotonNetwork.Destroy(this.photonView);
+        ui_player.UI_Object.loose = true;
+        if (CheckSurvivor() > 1)
+        {
+            ui_player.Loose();
+        }
+        else
+        {
+            if (CheckWonSurvivor())
+            {
+                ui_player.Loose();
+            }
+            else
+            {
+                ui_player.End();
+            }
+           
+        }
         game.CheckSurvivor();
-        ui_player.Loose();
+        PhotonNetwork.Destroy(this.photonView);
+        Destroy(this.gameObject);
     }
 
     public void Win()
     {
-        ui_player.Win();
-        game.CheckSurvivor();
+        print(CheckSurvivor());
+        if (CheckSurvivor() > 1)
+        {
+            ui_player.Win();
+            photonView.RPC("SetState", RpcTarget.All, 6, true);
+        }
+        else
+        {
+            if (CheckWonSurvivor())
+            {
+                ui_player.Next();
+                photonView.RPC("SetState", RpcTarget.All, 6, true);
+                game.CheckSurvivor();
+            }
+            else
+            {
+                ui_player.EndGame();
+                photonView.RPC("SetState", RpcTarget.All, 6, true);
+            }
+           
+        }
+           
+ 
     }
 
+    public int CheckSurvivor()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (!players[i].GetComponent<PlayerBoson>().won)
+            {
+                counter++;
+            }
+        }
+        return counter;
+    }
 
+    public bool CheckWonSurvivor()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].GetComponent<PlayerBoson>().won)
+            {
+                counter++;
+            }
+        }
+        return counter > 0;
+    }
 
+    public int NumberWonSurvivor()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        int counter = 0;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i].GetComponent<PlayerBoson>().won)
+            {
+                counter++;
+            }
+        }
+        return counter;
+    }
 
 
 }

@@ -22,12 +22,16 @@ public class Bullet_Action : MonoBehaviourPun
     {
         if(collision.name == "Zombie(Clone)")
         {
-            PhotonNetwork.Destroy(collision.gameObject);
-            PhotonNetwork.Destroy(this.gameObject);
+            //Destroy(collision.gameObject);
+            Destroy(this.gameObject);
         }
         if(collision.name == "wallDown" || collision.name == "wallRight" || collision.name == "wallUp" || collision.name == "wallLeft")
         {
-            PhotonNetwork.Destroy(this.gameObject);
+            Destroy(this.gameObject);
         }
+        
     }
+
+
+
 }

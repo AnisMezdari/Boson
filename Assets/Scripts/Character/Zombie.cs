@@ -15,27 +15,37 @@ public class Zombie : MonoBehaviourPun {
 
     // Use this for initialization
     void Start () {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            followPlayer = false;
-        }
+
+        followPlayer = false;
     }
 
     // Update is called once per frame
     void Update () {
-        if (PhotonNetwork.IsMasterClient)
+
+        if(followPlayer)
         {
-            if(followPlayer)
+            // if the player who is being followed is dead
+            if (target == null)
+            {
+                ChoosePlayer();
+
+            }else if (playerFollowed != null  &&  playerFollowed.GetComponent<PlayerBoson>().won)
+            {
+                ChoosePlayer();
+            }
+            else
             {
                 this.transform.position = Vector3.MoveTowards(transform.position, target.position, movingSpeed * Time.deltaTime);
                 FollowPlayer();
             }
-            else
-            {
-                ChoosePlayer();
-            }
-
+                
         }
+        else
+        {
+            ChoosePlayer();
+        }
+
+        
     }
 
     private void TakeDoor(int index)
@@ -59,35 +69,43 @@ public class Zombie : MonoBehaviourPun {
     }
 
     void OnTriggerEnter2D(Collider2D coll){
-        if (PhotonNetwork.IsMasterClient)
-        {
-            if (coll.name == "DoorLeft")
-            {
-                this.transform.position = new Vector3(this.transform.position.x - 6, this.transform.position.y, 0);
-                Xposition--;
-            }
-            if (coll.name == "DoorDown")
-            {
-                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 8, 0);
-                Yposition++;
-            }
-            if (coll.name == "DoorRight")
-            {
-                this.transform.position = new Vector3(this.transform.position.x + 6, this.transform.position.y, 0);
-                Xposition++;
-            }
-            if (coll.name == "DoorTop")
-            {
-                this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 8, 0);
-                Yposition--;
-            }
 
+        if (coll.name == "DoorLeft")
+        {
+            this.transform.position = new Vector3(this.transform.position.x - 6, this.transform.position.y, 0);
+            Xposition--;
         }
-       
+        if (coll.name == "DoorDown")
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 8, 0);
+            Yposition++;
+        }
+        if (coll.name == "DoorRight")
+        {
+            this.transform.position = new Vector3(this.transform.position.x + 6, this.transform.position.y, 0);
+            Xposition++;
+        }
+        if (coll.name == "DoorTop")
+        {
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 8, 0);
+            Yposition--;
+        }
+
+        if (coll.name == "Bullet(Clone)")
+        {
+            Destroy(this.gameObject);
+        }
+
+
     }
 
     void FollowPlayer()
     {
+        if(playerFollowed == null)
+        {
+            followPlayer = false;
+            return;
+        }
         if (playerFollowed.GetComponent<PlayerBoson>().positionX < this.Xposition)
         {
             TakeDoor(1);
@@ -114,6 +132,11 @@ public class Zombie : MonoBehaviourPun {
             AssignPlayerToTarget(listPlayerInSameRoom);
 
         }
+        else
+        {
+            this.target = null;
+            followPlayer = false;
+        }
     }
 
      private void AssignPlayerToTarget(List<GameObject> listPlayerInSameRoom)
@@ -135,7 +158,11 @@ public class Zombie : MonoBehaviourPun {
         {
             if (PlayerSameRoom(listPlayer[i]))
             {
-                listPlayerInSameRoom.Add(listPlayer[i]);
+                if (!listPlayer[i].GetComponent<PlayerBoson>().won)
+                {
+                    listPlayerInSameRoom.Add(listPlayer[i]);
+                }
+               
             }
         }
         return listPlayerInSameRoom;

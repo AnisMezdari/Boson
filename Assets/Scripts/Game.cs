@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 
-public class Game : MonoBehaviourPunCallbacks
+public class Game : MonoBehaviourPun
 {
 	public GameObject map;
 	public GameObject player;
@@ -27,17 +27,25 @@ public class Game : MonoBehaviourPunCallbacks
     private int initialPlayerPositionX;
     private int initialPlayerPositionY;
 
+    public GameObject parent;
+
     // Use this for initialization
     void Start () {
-        while (InitateMap(widthMap,heightMap,randomDelete) < minimumRoom);
+
+        StartRound();
+        Camera.main.aspect = 2960f / 1440f;
+    }
+
+ 
+    public void StartRound()
+    {
+        while (InitateMap(widthMap, heightMap, randomDelete) < minimumRoom) ;
         if (PhotonNetwork.IsMasterClient)
         {
             SpawnPlayers();
             InitiateExit();
             SpawnZombie(numberZombie);
-            
         }
-        Camera.main.aspect = 2960f / 1440f;
     }
 
 	int InitateMap(int largeur,int hauteur,bool randomDelete){
@@ -48,6 +56,7 @@ public class Game : MonoBehaviourPunCallbacks
 			for(int i=0;i<largeur;i++){
 				GameObject mapInstantiate = Instantiate(map, new Vector3(0+(i*SCALE_X), 0+(j*SCALE_Y), 1), Quaternion.identity);
 				mapInstantiate.name = "Room_"+i+"_"+j;
+                mapInstantiate.transform.parent = parent.transform;
 				InitiateDoor(mapInstantiate,i,j);
 				counterRoom++;
 			}
@@ -112,13 +121,15 @@ public class Game : MonoBehaviourPunCallbacks
 	    }
     }
 
-    void SpawnZombie(int numberZombie){
+    void SpawnZombie(int numberZombie)
+    {
         int positionX;
         int positionY;
         int positionXPlayer;
         int positionYPlayer;
-        for (int i =0; i<numberZombie;i++){
-			
+        for (int i = 0; i < numberZombie; i++)
+        {
+
             do
             {
                 GameObject randomPlayer = GameObject.Find("Perso(Clone)");
@@ -131,7 +142,6 @@ public class Game : MonoBehaviourPunCallbacks
             } while (positionX == positionXPlayer && positionY == positionYPlayer);
 
             GameObject room = GameObject.Find("Room_" + positionX + "_" + positionY);
-
             int counter = room.GetComponent<AddZombie>().counter;
 
             float[] precisePostion = SpawnZombieAtPrecisePosition(counter);
@@ -139,43 +149,50 @@ public class Game : MonoBehaviourPunCallbacks
             float shiftX = precisePostion[0];
             float shiftY = precisePostion[1];
 
-            GameObject zombieInstantiate = PhotonNetwork.InstantiateSceneObject("Zombie",
-                new Vector3(shiftX + (positionX * SCALE_X), shiftY + (positionY * SCALE_Y), 1), Quaternion.identity);
-
-            Zombie movingScript = zombieInstantiate.GetComponent<Zombie>();
-			movingScript.Xposition = positionX;
-			movingScript.Yposition = positionY;
-
-            room.GetComponent<AddZombie>().counter = room.GetComponent<AddZombie>().counter + 1;
+            photonView.RPC("InstantiateZombie", RpcTarget.All, positionX, positionY, shiftX, shiftY);
 
         }
 
-	}
+    }
+
+    [PunRPC]
+    void InstantiateZombie(int positionX, int positionY, float shiftX, float shiftY)
+    {
+        Transform zombieInstantiate = Instantiate(Resources.Load<Transform>("Zombie"), new Vector3(shiftX + (positionX * SCALE_X), shiftY + (positionY * SCALE_Y), 1), Quaternion.identity);
+        zombieInstantiate.parent = parent.transform;
+        Zombie movingScript = zombieInstantiate.GetComponent<Zombie>();
+        movingScript.Xposition = positionX;
+        movingScript.Yposition = positionY;
+
+        GameObject room = GameObject.Find("Room_" + positionX + "_" + positionY);
+        int counter = room.GetComponent<AddZombie>().counter;
+        room.GetComponent<AddZombie>().counter = room.GetComponent<AddZombie>().counter + 1;
+    }
 
     private float[] SpawnZombieAtPrecisePosition(int counter)
     {
         float[] precisePosition = { 0, 0 };
 
-        if(counter == 0)
+        if (counter == 0)
         {
             precisePosition[0] = -13;
             precisePosition[1] = 5.26f;
-            
+
             return precisePosition;
         }
-        if(counter == 1)
+        if (counter == 1)
         {
             precisePosition[0] = 13;
             precisePosition[1] = 5.26f;
             return precisePosition;
         }
-        if(counter == 2)
+        if (counter == 2)
         {
             precisePosition[0] = 13;
             precisePosition[1] = -5.26f;
             return precisePosition;
         }
-        if(counter == 3)
+        if (counter == 3)
         {
             precisePosition[0] = -13;
             precisePosition[1] = -5.26f;
@@ -220,18 +237,36 @@ public class Game : MonoBehaviourPunCallbacks
     public void CheckSurvivor()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-        if (players.Length == 0)
+        for(int i =0; i < players.Length; i++)
         {
-            EndGame();
+            if (!players[i].GetComponent<PlayerBoson>().won)
+            {
+                return;
+            }
         }
+        photonView.RPC("EndGame", RpcTarget.All);
+        //EndGame();
     }
 
+    [PunRPC]
     private void EndGame()
     {
-
+        Destroy(GameObject.Find("Map"));
+        GameObject newMap = new GameObject("Map");
+        parent = newMap;
+        ChangeStatePlayer();
+        StartRound();
     }
 
+    private void ChangeStatePlayer()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < players.Length; i++)
+        {
+            GameObject player = players[i];
+            player.GetComponent<PlayerBoson>().UseSetStateRPC(6, false);
+        }
+    }
     // Update is called once per frame
     void Update()
     {

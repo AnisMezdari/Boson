@@ -62,6 +62,8 @@ public class UI_PlayerBoson: MonoBehaviourPun
         this.namePlayerBoson = namePlayerBoson;
     }
 
+
+
     public void OnclickExitButtonu()
     {
 
@@ -92,5 +94,20 @@ public class UI_PlayerBoson: MonoBehaviourPun
     public void Loose()
     {
         UI_Object.looseText.gameObject.SetActive(true);
+    }
+
+    public void End()
+    {
+        UI_Object.endText.gameObject.SetActive(true);
+    }
+
+    public void Next()
+    {
+        UI_Object.nextText.gameObject.SetActive(true);
+    }
+
+    public void EndGame()
+    {
+        UI_Object.winGametext.gameObject.SetActive(true);
     }
 }
