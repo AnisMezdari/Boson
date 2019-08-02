@@ -12,6 +12,7 @@ public class ActionPlayer : MonoBehaviourPun
     public Button shotButton;
     private PlayerBoson player;
     private bool recharge;
+    public int tempsRecharge = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -85,7 +86,7 @@ public class ActionPlayer : MonoBehaviourPun
     IEnumerator WaitAfterShot()
     {
         recharge = true;
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(tempsRecharge);
         recharge = false;
     }
 

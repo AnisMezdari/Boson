@@ -18,12 +18,17 @@ public class UI_Objects : MonoBehaviourPun
     public Text munitions;
 
     public bool loose = false;
-    
+
+    private Spectator spectator;
+    private GameObject joystick;
+    private GameObject shotButton;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        spectator = Camera.main.GetComponent<Spectator>();
+        joystick = GameObject.Find("Fixed Joystick");
+        shotButton = GameObject.Find("Shot button");
     }
 
     // Update is called once per frame
@@ -33,7 +38,16 @@ public class UI_Objects : MonoBehaviourPun
         {
             endText.gameObject.SetActive(true);
         }
-       
+        if (spectator != null && spectator.spectatorMode)
+        {
+            joystick.GetComponent<CanvasGroup>().alpha = 0;
+            shotButton.GetComponent<CanvasGroup>().alpha = 0;
+        }
+        else
+        {
+            joystick.GetComponent<CanvasGroup>().alpha = 1;
+            shotButton.GetComponent<CanvasGroup>().alpha = 1;
+        }
 
     }
     public void OnclikSpactatorMode()

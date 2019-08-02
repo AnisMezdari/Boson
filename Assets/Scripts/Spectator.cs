@@ -23,7 +23,6 @@ public class Spectator : MonoBehaviour
         {
 
             if(playerObserved != null && !playerObserved.won) {
-                print(" sa passe");
                 Camera.main.transform.position = new Vector3((playerObserved.positionX * playerObserved.game.SCALE_X),
                                                              (playerObserved.positionY * playerObserved.game.SCALE_Y),
                                                             -(playerObserved.game.INITIATE_POSITION));

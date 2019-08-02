@@ -346,7 +346,7 @@ MonoBehaviour:
   health: 3
   positionX: 0
   positionY: 0
-  munitions: 6
+  munitions: 10
   spectatorMode: 0
   won: 0
   ranking: 0
@@ -423,6 +423,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movingSpeed: 4.7
   shotButton: {fileID: 0}
+  tempsRecharge: 1
 --- !u!114 &-613205907490679775
 MonoBehaviour:
   m_ObjectHideFlags: 0

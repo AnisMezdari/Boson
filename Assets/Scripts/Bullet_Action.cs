@@ -6,7 +6,7 @@ using UnityEngine;
 public class Bullet_Action : MonoBehaviourPun
 {
 
-    float speed = 20;
+    public float speed = 15;
     // Start is called before the first frame update
     void Start()
     {
