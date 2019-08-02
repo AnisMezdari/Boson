@@ -33,6 +33,7 @@ public class UI_Objects : MonoBehaviourPun
         {
             endText.gameObject.SetActive(true);
         }
+       
 
     }
     public void OnclikSpactatorMode()
@@ -81,5 +82,10 @@ public class UI_Objects : MonoBehaviourPun
             }
         }
         return counter;
+    }
+
+    public void SetRanking(int ranking)
+    {
+        endText.transform.GetChild(3).GetComponent<Text>().text = ranking + "";
     }
 }

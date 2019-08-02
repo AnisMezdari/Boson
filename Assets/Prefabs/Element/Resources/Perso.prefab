@@ -349,6 +349,8 @@ MonoBehaviour:
   munitions: 6
   spectatorMode: 0
   won: 0
+  ranking: 0
+  readyFornextGame: 0
   spectatorPlayer: {fileID: 0}
   game: {fileID: 0}
   ui_player: {fileID: 0}

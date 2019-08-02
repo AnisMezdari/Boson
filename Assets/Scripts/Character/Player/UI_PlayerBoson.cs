@@ -110,4 +110,9 @@ public class UI_PlayerBoson: MonoBehaviourPun
     {
         UI_Object.winGametext.gameObject.SetActive(true);
     }
+
+    public void SetRanking(int ranking)
+    {
+        UI_Object.SetRanking(ranking);
+    }
 }

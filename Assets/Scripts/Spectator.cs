@@ -5,9 +5,11 @@ using UnityEngine;
 public class Spectator : MonoBehaviour
 {
 
-    bool spectatorMode = false;
+    public bool spectatorMode = false;
 
-    PlayerBoson playerObserved;
+    public PlayerBoson playerObserved;
+
+    public PlayerBoson player;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,16 +21,27 @@ public class Spectator : MonoBehaviour
     {
         if (spectatorMode)
         {
+
             if(playerObserved != null && !playerObserved.won) {
+                print(" sa passe");
                 Camera.main.transform.position = new Vector3((playerObserved.positionX * playerObserved.game.SCALE_X),
-                                                             (playerObserved.positionY * playerObserved.game.SCALE_Y), 
+                                                             (playerObserved.positionY * playerObserved.game.SCALE_Y),
                                                             -(playerObserved.game.INITIATE_POSITION));
             }
             else
             {
                 LaunchSpectatorMode();
             }
-           
+
+        }
+        else
+        {
+            if(player != null)
+            {
+                playerObserved = player;
+            }
+
+            
         }
     }
 
@@ -50,6 +63,17 @@ public class Spectator : MonoBehaviour
       
     }
 
-
+    public void SetSpectatorMode(bool spectatorMode)
+    {
+        if(player != null)
+        {
+            this.spectatorMode = spectatorMode;
+        }
+        
+    }
+    public void SetPlayer(PlayerBoson player)
+    {
+        this.player = player;
+    }
 
 }

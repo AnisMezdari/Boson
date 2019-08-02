@@ -6,6 +6,7 @@ using UnityEngine;
 public class Bullet_Action : MonoBehaviourPun
 {
 
+    float speed = 20;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +16,7 @@ public class Bullet_Action : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(this.transform.up *Time.deltaTime * 10  , Space.World);
+        transform.Translate(this.transform.up *Time.deltaTime * speed, Space.World);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

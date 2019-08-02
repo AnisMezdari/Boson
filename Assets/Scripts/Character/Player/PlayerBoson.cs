@@ -13,7 +13,8 @@ public class PlayerBoson : MonoBehaviourPun
     public int munitions= 6 ;
     public bool spectatorMode = false;
     public bool won = false;
-    
+    public int ranking = 0;
+    public bool readyFornextGame = false;
 
     public PlayerBoson spectatorPlayer;
 
@@ -53,23 +54,24 @@ public class PlayerBoson : MonoBehaviourPun
         {
             if (game != null)
             {
-
-                if (spectatorMode)
-                {
-                    this.positionX = spectatorPlayer.positionX;
-                    this.positionY = spectatorPlayer.positionY;
-                }
-                Camera.main.transform.position = new Vector3((positionX * game.SCALE_X), (positionY * game.SCALE_Y), - (game.INITIATE_POSITION));
+                Camera.main.transform.position = new Vector3((positionX * game.SCALE_X), (positionY * game.SCALE_Y), -(game.INITIATE_POSITION));
+            }
+            if (won && CheckSurvivor() < 1 && NumberWonSurvivor() < 2)
+            {
+                ui_player.EndGame();
+            }
+            if (readyFornextGame)
+            {
+                Camera.main.GetComponent<Spectator>().SetPlayer(this);
+                Camera.main.GetComponent<Spectator>().SetSpectatorMode(false);
+                readyFornextGame = false;
             }
         }
         if (!won)
         {
             this.GetComponent<SpriteRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 1f);
         }
-        if(won && CheckSurvivor() < 1 && NumberWonSurvivor() < 2)
-        {
-            ui_player.EndGame();
-        }
+        
 
     }
 
@@ -107,6 +109,7 @@ public class PlayerBoson : MonoBehaviourPun
         health = 3;
         this.GetComponent<SpriteRenderer>().material.color = new Color(1.0f, 1.0f, 1.0f, 0f);
     }
+
 
     public void UseSetStateRPC(int munitions, bool won)
     {
@@ -154,6 +157,8 @@ public class PlayerBoson : MonoBehaviourPun
 
     public void Die()
     {
+        ranking = RankingCalculation();
+        ui_player.SetRanking(ranking);
         ui_player.UI_Object.loose = true;
         if (CheckSurvivor() > 1)
         {
@@ -167,6 +172,7 @@ public class PlayerBoson : MonoBehaviourPun
             }
             else
             {
+                
                 ui_player.End();
             }
            
@@ -176,9 +182,14 @@ public class PlayerBoson : MonoBehaviourPun
         Destroy(this.gameObject);
     }
 
+    public int  RankingCalculation()
+    {
+        return (CheckSurvivor()) + NumberWonSurvivor();
+    }
+
     public void Win()
     {
-        print(CheckSurvivor());
+        
         if (CheckSurvivor() > 1)
         {
             ui_player.Win();

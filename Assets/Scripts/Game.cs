@@ -129,7 +129,6 @@ public class Game : MonoBehaviourPun
         int positionYPlayer;
         for (int i = 0; i < numberZombie; i++)
         {
-
             do
             {
                 GameObject randomPlayer = GameObject.Find("Perso(Clone)");
@@ -255,8 +254,10 @@ public class Game : MonoBehaviourPun
         GameObject newMap = new GameObject("Map");
         parent = newMap;
         ChangeStatePlayer();
+        RemoveEscape();
         StartRound();
     }
+
 
     private void ChangeStatePlayer()
     {
@@ -265,8 +266,19 @@ public class Game : MonoBehaviourPun
         {
             GameObject player = players[i];
             player.GetComponent<PlayerBoson>().UseSetStateRPC(6, false);
+            //Camera.main.GetComponent<Spectator>().SetSpectatorMode(false);
+            player.GetComponent<PlayerBoson>().readyFornextGame = true;
+
+
         }
     }
+
+    private void RemoveEscape()
+    {
+        GameObject escape =  GameObject.Find("Escape(Clone)");
+        Destroy(escape);
+    }
+
     // Update is called once per frame
     void Update()
     {
